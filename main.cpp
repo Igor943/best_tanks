@@ -1,6 +1,6 @@
 
 #include "main.hpp"
-//try work hard
+//try work hard2
 
 int gx = 0, gy = 0;
 
