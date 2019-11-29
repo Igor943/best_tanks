@@ -15,6 +15,7 @@ private:
     int _fd;
     int _tank_width;
     int _tank_height;
+    int _lvl;
 };
 
 #endif /* _USER_HPP_ */
