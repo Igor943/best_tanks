@@ -1,18 +1,19 @@
+
 #ifndef _FIELD_HPP_
 #define _FIELD_HPP_
 
 class Field
 {
 public:
-    Field(int x, int  y);
+    Field(int width, int  height);
     char get_point(int x, int y);
-    int get_arena_width();
-    int get_arena_height();
-    ~Field();
+    int get_arena_width(void);
+    int get_arena_height(void);
+    ~Field(void);
 private:
     char** _arena;
     int _arena_width;
     int _arena_height;
 };
 
-#endif // _FIELD_HPP_
+#endif /* _FIELD_HPP_ */
