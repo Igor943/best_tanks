@@ -2,6 +2,8 @@
 #ifndef _FIELD_HPP_
 #define _FIELD_HPP_
 
+class User;
+
 class Field
 {
 public:
@@ -9,6 +11,7 @@ public:
     char get_point(int x, int y);
     int get_arena_width(void);
     int get_arena_height(void);
+    void do_action(User &user);
     ~Field(void);
 private:
     char** _arena;

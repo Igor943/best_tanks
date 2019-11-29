@@ -6,10 +6,9 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
-
-#include <vector>
-#include <iterator>
+#include <poll.h>
 
 #include "Field.hpp"
+#include "User.hpp"
 
 #endif /* _MAIN_HPP_ */

@@ -1,6 +1,9 @@
 
 #include <stdlib.h>
+#include <unistd.h>
+#include <ncurses.h>
 #include "Field.hpp"
+#include "User.hpp"
 
 Field::Field(int width, int  height)
 {
@@ -25,6 +28,17 @@ int Field::get_arena_width(void)
 int Field::get_arena_height(void)
 {
     return (_arena_height);
+}
+
+void Field::do_action(User &user)
+{
+    int input = 0;
+    read(user.get_fd(), &input, 4);
+    if (input == 'q')
+    {
+        endwin();
+        exit(EXIT_SUCCESS);
+    }
 }
 
 Field::~Field(void)
