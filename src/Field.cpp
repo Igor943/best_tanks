@@ -1,16 +1,3 @@
-// class Field
-// {
-// public:
-//     Field(int x, int  y);
-//     char get_point(int x, int y);
-//     int get_arena_width();
-//     int get_arena_height();
-//     ~Field();
-// private:
-//     char** _arena;
-//     int _arena_width;
-//     int _arena_height;
-// };
 
 #include <stdlib.h>
 #include "Field.hpp"
@@ -38,4 +25,12 @@ int Field::get_arena_width(void)
 int Field::get_arena_height(void)
 {
     return (_arena_height);
+}
+
+Field::~Field(void)
+{
+	for (int i = 0; i < _arena_width; ++i) {
+		free(_arena[i]);
+	}
+    free(_arena);
 }
