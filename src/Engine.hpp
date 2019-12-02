@@ -19,7 +19,6 @@ public:
     static void engine_run(void);
 private:
     void do_action();
-    static int a;
 };
 
 #endif //_ENGINE_HPP_
