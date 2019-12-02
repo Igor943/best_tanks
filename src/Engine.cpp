@@ -1,7 +1,7 @@
 
 #include "Engine.hpp"
 
-int Engine::engine_init(void)
+void Engine::engine_init(void)
 {   
     int x, y, res;
 	User u1(STDIN_FILENO);
@@ -44,6 +44,9 @@ int Engine::engine_init(void)
 		}
 
 	}
+}
+
+void Engine::engine_run(void)
+{
 	endwin();
-    return (0);
 }
