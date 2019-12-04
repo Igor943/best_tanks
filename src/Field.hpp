@@ -2,16 +2,16 @@
 #ifndef _FIELD_HPP_
 #define _FIELD_HPP_
 
+#include "Engine.hpp"
+
 class User;
 
 class Field
 {
 public:
-    Field(int width, int  height);
-    char get_point(int x, int y);
-    int get_arena_width(void);
-    int get_arena_height(void);
+    Field(void);
     void do_action(User &user);
+    void do_refresh(void);
     ~Field(void);
 private:
     char** _arena;

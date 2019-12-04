@@ -4,7 +4,7 @@ OBJ			=	$(addprefix $(OBJDIR)/, $(patsubst $(SRCDIR)/%.cpp, %.o, $(wildcard $(SR
 HDR			=	$(SRCDIR)/*.hpp
 TARGET		=	best_tanks
 GCC			=	g++
-CPPFLAGS	=	-std=gnu++14 -Wall -Wextra -lncurses
+CPPFLAGS	=	-std=gnu++14 -Wall -Wextra -lncurses -DDEBUG_ON
 
 .PHONY: all clean
 
