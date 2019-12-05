@@ -23,11 +23,14 @@ void Field::do_action(User &user)
 #ifdef DEBUG_ON
     log << "--- Field::do_action() call\n";
 #endif
-    int input = 0;
+    uint64_t input;
+    int r = read(user.get_fd(), &input, 8);
     Point const *cur_pos = user.get_cur_pos();
-    input = getch();
+    // input = getch();
 #ifdef DEBUG_ON
+    log << "--- User's fd is " << user.get_fd() << '\n';
     log << "--- User input is " << input << '\n';
+    // log << "--- User sayed " << input << '\n';
 #endif
     if (input == 'q')
     {
@@ -64,21 +67,21 @@ void Field::do_action(User &user)
         }
         user.set_cur_point(cur_pos->x - 1, cur_pos->y);
     }
-//     else if (input == KEY_UP)
-//     {
-// #ifdef DEBUG_ON
-//         log << "--- User KEY_UP call\n";
-// #endif
-//         for (int i = 0; i < user.get_tank_width(); ++i)
-//         {
-//             _arena[cur_pos->x + i][cur_pos->y + user.get_tank_width()] = 0;
-//         }
-//         for (int i = 0; i < user.get_tank_width(); ++i)
-//         {
-//             _arena[cur_pos->x + i][cur_pos->y + user.get_tank_width()] = 'T';
-//         }
-//         user.set_cur_point(cur_pos->x + 1, cur_pos->y);
-//     }
+    else if (input == KEY_UP)
+    {
+#ifdef DEBUG_ON
+        log << "--- User KEY_UP call\n";
+#endif
+        for (int i = 0; i < user.get_tank_width(); ++i)
+        {
+            _arena[cur_pos->x + i][cur_pos->y + user.get_tank_height() - 1] = 0;
+        }
+        for (int i = 0; i < user.get_tank_width(); ++i)
+        {
+            _arena[cur_pos->x + i][cur_pos->y - 1] = 'T';
+        }
+        user.set_cur_point(cur_pos->x, cur_pos->y - 1);
+    }
     else if (input == KEY_DOWN)
     {
 #ifdef DEBUG_ON

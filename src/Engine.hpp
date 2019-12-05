@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <poll.h>
 #include <string.h>
+#include <sys/timerfd.h>
 
 /* C++ includes */
 #include <vector>
