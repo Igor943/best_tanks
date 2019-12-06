@@ -15,10 +15,15 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
+#include <random>
 
 /* Proj includes */
 #include "Field.hpp"
-#include "User.hpp"
+#include "Unit.hpp"
+
+#define LOC_USER_TANK   1
+#define SOC_USER_TANK   2
+#define AI_TANK         3
 
 class Engine
 {
@@ -36,7 +41,7 @@ struct Point
 };
 
 #ifdef DEBUG_ON
-extern std::ofstream log;
+extern std::ofstream _t_log;
 #endif
 
 #endif /* _ENGINE_HPP_ */

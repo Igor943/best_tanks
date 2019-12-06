@@ -4,14 +4,15 @@
 
 #include "Engine.hpp"
 
-class User;
+class Unit;
 
 class Field
 {
 public:
     Field(void);
-    void do_action(User &user);
+    void do_action(Unit &unit);
     void do_refresh(void);
+    int get_rand_move(void);
     ~Field(void);
 private:
     char** _arena;

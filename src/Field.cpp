@@ -13,25 +13,42 @@ Field::Field(void)
     _arena_width = x;
     _arena_height = y;
 #ifdef DEBUG_ON
-    log << "--- width screen: " << _arena_width << '\n';
-    log << "--- height screen: " << _arena_height << '\n';
+    _t_log << "--- width screen: " << _arena_width << '\n';
+    _t_log << "--- height screen: " << _arena_height << '\n';
 #endif
 }
 
-void Field::do_action(User &user)
+void Field::do_action(Unit &unit)
 {
 #ifdef DEBUG_ON
-    log << "--- Field::do_action() call\n";
+    _t_log << "--- Field::do_action() call\n";
 #endif
-    uint64_t input;
-    int r = read(user.get_fd(), &input, 8);
-    Point const *cur_pos = user.get_cur_pos();
-    // input = getch();
+    uint64_t input_64;
+    int input;
+    char pic = '0';
+    if (unit.get_type() == LOC_USER_TANK)
+    {
+        input = getch();
+        pic = 'F';
+    }
+    else if (unit.get_type() == AI_TANK)
+    {
+        read(unit.get_fd(), &input_64, 8);
+        input = get_rand_move(); 
+        pic = 'A';
+    }
+    else if (unit.get_type() == SOC_USER_TANK)
+    {
+        read(unit.get_fd(), &input_64, 8);
+        // input = get_rand_move(); 
+        input = KEY_RIGHT; 
+        pic = 'B';
+    }
 #ifdef DEBUG_ON
-    log << "--- User's fd is " << user.get_fd() << '\n';
-    log << "--- User input is " << input << '\n';
-    // log << "--- User sayed " << input << '\n';
+    _t_log << "--- Unit's fd is " << unit.get_fd() << '\n';
+    _t_log << "--- Unit input is " << input << '\n';
 #endif
+    Point const *cur_pos = unit.get_cur_pos(); 
     if (input == 'q')
     {
         endwin();
@@ -40,62 +57,62 @@ void Field::do_action(User &user)
     else if (input == KEY_RIGHT)
     {
 #ifdef DEBUG_ON
-        log << "--- User KEY_RIGHT call\n";
+        _t_log << "--- Unit KEY_RIGHT call\n";
 #endif
-        for (int i = 0; i < user.get_tank_height(); ++i)
+        for (int i = 0; i < unit.get_tank_height(); ++i)
         {
             _arena[cur_pos->x][cur_pos->y + i] = 0;
         }
-        for (int i = 0; i < user.get_tank_height(); ++i)
+        for (int i = 0; i < unit.get_tank_height(); ++i)
         {
-            _arena[cur_pos->x + user.get_tank_width()][cur_pos->y + i] = 'T';
+            _arena[cur_pos->x + unit.get_tank_width()][cur_pos->y + i] = pic;
         }
-        user.set_cur_point(cur_pos->x + 1, cur_pos->y);
+        unit.set_cur_point(cur_pos->x + 1, cur_pos->y);
     }
         else if (input == KEY_LEFT)
     {
 #ifdef DEBUG_ON
-        log << "--- User KEY_LEFT call\n";
+        _t_log << "--- Unit KEY_LEFT call\n";
 #endif
-        for (int i = 0; i < user.get_tank_height(); ++i)
+        for (int i = 0; i < unit.get_tank_height(); ++i)
         {
-            _arena[cur_pos->x + user.get_tank_width() - 1][cur_pos->y + i] = 0;
+            _arena[cur_pos->x + unit.get_tank_width() - 1][cur_pos->y + i] = 0;
         }
-        for (int i = 0; i < user.get_tank_height(); ++i)
+        for (int i = 0; i < unit.get_tank_height(); ++i)
         {
-            _arena[cur_pos->x - 1][cur_pos->y + i] = 'T';
+            _arena[cur_pos->x - 1][cur_pos->y + i] = pic;
         }
-        user.set_cur_point(cur_pos->x - 1, cur_pos->y);
+        unit.set_cur_point(cur_pos->x - 1, cur_pos->y);
     }
     else if (input == KEY_UP)
     {
 #ifdef DEBUG_ON
-        log << "--- User KEY_UP call\n";
+        _t_log << "--- Unit KEY_UP call\n";
 #endif
-        for (int i = 0; i < user.get_tank_width(); ++i)
+        for (int i = 0; i < unit.get_tank_width(); ++i)
         {
-            _arena[cur_pos->x + i][cur_pos->y + user.get_tank_height() - 1] = 0;
+            _arena[cur_pos->x + i][cur_pos->y + unit.get_tank_height() - 1] = 0;
         }
-        for (int i = 0; i < user.get_tank_width(); ++i)
+        for (int i = 0; i < unit.get_tank_width(); ++i)
         {
-            _arena[cur_pos->x + i][cur_pos->y - 1] = 'T';
+            _arena[cur_pos->x + i][cur_pos->y - 1] = pic;
         }
-        user.set_cur_point(cur_pos->x, cur_pos->y - 1);
+        unit.set_cur_point(cur_pos->x, cur_pos->y - 1);
     }
     else if (input == KEY_DOWN)
     {
 #ifdef DEBUG_ON
-        log << "--- User KEY_DOWN call\n";
+        _t_log << "--- Unit KEY_DOWN call\n";
 #endif
-        for (int i = 0; i < user.get_tank_width(); ++i)
+        for (int i = 0; i < unit.get_tank_width(); ++i)
         {
             _arena[cur_pos->x + i][cur_pos->y] = 0;
         }
-        for (int i = 0; i < user.get_tank_width(); ++i)
+        for (int i = 0; i < unit.get_tank_width(); ++i)
         {
-            _arena[cur_pos->x + i][cur_pos->y + user.get_tank_height()] = 'T';
+            _arena[cur_pos->x + i][cur_pos->y + unit.get_tank_height()] = pic;
         }
-        user.set_cur_point(cur_pos->x, cur_pos->y + 1);
+        unit.set_cur_point(cur_pos->x, cur_pos->y + 1);
     }
 }
 
@@ -116,6 +133,19 @@ void Field::do_refresh(void)
         }
     }
     refresh();
+}
+
+int Field::get_rand_move(void)
+{
+    int arr[4];
+    arr[0] = KEY_RIGHT;
+    arr[1] = KEY_LEFT;
+    arr[2] = KEY_DOWN;
+    arr[3] = KEY_UP;
+    std::random_device device;  
+    std::mt19937 generator(device());
+    std::uniform_int_distribution<int> distribution(0,3);
+    return (arr[distribution(generator)]);
 }
 
 Field::~Field(void)
