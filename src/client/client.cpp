@@ -10,7 +10,21 @@
 #include <sys/socket.h>
 #include <netinet/in.h> 
 
-int main() {    
+unsigned int inet_addr(char *str)
+{
+    int a, b, c, d;
+    char arr[4];
+    sscanf(str, "%d.%d.%d.%d", &a, &b, &c, &d);
+    arr[0] = a; arr[1] = b; arr[2] = c; arr[3] = d;
+    return *(unsigned int *)arr;
+}
+
+int main(int ac, char **av) {    
+
+    if (ac != 2) {
+        printf("usage: ./a.out [192.168.190.111]\n");
+        exit(EXIT_SUCCESS);
+    }
 
     initscr();
 	noecho();
@@ -36,7 +50,8 @@ int main() {
         sock = socket(AF_INET, SOCK_STREAM, 0);
         addr.sin_family = AF_INET;
         addr.sin_port = htons(3427);
-        addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+        // addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+        addr.sin_addr.s_addr = inet_addr(av[1]);
         int inp = getch();
         clear();
         res = connect(sock, (struct sockaddr *)&addr, sizeof(addr));
