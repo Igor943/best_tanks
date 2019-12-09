@@ -10,6 +10,9 @@
 #include <poll.h>
 #include <string.h>
 #include <sys/timerfd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h> 
 
 /* C++ includes */
 #include <vector>

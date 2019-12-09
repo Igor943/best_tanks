@@ -40,18 +40,41 @@ void Engine::engine_run(void)
 
 	Unit u3(tim2, AI_TANK, 25, 30);
 
-	struct pollfd fds[3];
+
+
+    int listener;
+    struct sockaddr_in addr;
+
+    listener = socket(AF_INET, SOCK_STREAM, 0);
+
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(3427);
+    addr.sin_addr.s_addr = htonl(INADDR_ANY);
+
+ 	bind(listener, (struct sockaddr *)&addr, sizeof(addr));
+    listen(listener, 10);
+
+	Unit u4(listener, SOC_USER_TANK, 40, 0);
+
+
+
+
+
+
+	struct pollfd fds[4];
 	fds[0].fd = u1.get_fd();
 	fds[0].events = POLLIN;
 	fds[1].fd = u2.get_fd();
 	fds[1].events = POLLIN;
 	fds[2].fd = u3.get_fd();
 	fds[2].events = POLLIN;
+	fds[3].fd = u4.get_fd();
+	fds[3].events = POLLIN;
 
 	/* Main cycle */
 	while(1)
 	{
-		res = poll(fds, 3, -1);
+		res = poll(fds, 4, -1);
 		if (res == -1)
 		{
 			perror("bad poll");
@@ -73,6 +96,11 @@ void Engine::engine_run(void)
 			{
 				fds[2].revents = 0;
 				display.do_action(u3);
+			}
+			if (fds[3].revents & POLLIN)
+			{
+				fds[3].revents = 0;
+				display.do_action(u4);
 			}
 		}
 		display.do_refresh();

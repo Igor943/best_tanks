@@ -39,10 +39,36 @@ void Field::do_action(Unit &unit)
     }
     else if (unit.get_type() == SOC_USER_TANK)
     {
-        read(unit.get_fd(), &input_64, 8);
-        // input = get_rand_move(); 
-        input = KEY_RIGHT; 
-        pic = 'B';
+                                /* Creating some variables */
+                                int buf = 0;               // Buffer for send and receive
+                                int sock;                       // Сurrent connection socket
+                                // char *cry_mess;                 // Pointer for encrypt and decrypt
+                                /* Clear the buffer and waiting for connection */
+                                // memset(buf, 0, STDBUF);
+                                sock = accept(unit.get_fd(), NULL, NULL);
+                                /* Create log entries */
+                                // put_log("incoming connection");
+                                /* Receive a message and decrypt once */
+                                recv(sock, &buf, 4, 0);
+#ifdef DEBUG_ON
+                                _t_log << "--- Socket get " << buf << '\n';
+#endif
+                                // cry_mess = ft_decry(buf, get_key());
+                                /* ROSAPS try detect */
+                                // if (strcmp(cry_mess, "YAFILTR") == 0) {
+                                    // work_filter(sock);
+                                /* Other case */
+                                // } else {
+                                //     char asw[] = "ROSA(c) 2019 DAEMON\n";
+                                //     send(sock, asw, strlen(asw), 0);
+                                // }
+                                // /* Вischarge of resources */
+                                // free(cry_mess);
+                                close(sock);
+                                input = buf;
+                                pic = 'S';
+                                /* Create log entries */
+                                // put_log("connection closed");
     }
 #ifdef DEBUG_ON
     _t_log << "--- Unit's fd is " << unit.get_fd() << '\n';
