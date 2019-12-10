@@ -82,18 +82,18 @@ void Field::do_action(Unit &unit)
     }
     else if (input == KEY_RIGHT)
     {
-#ifdef DEBUG_ON
-        _t_log << "--- Unit KEY_RIGHT call\n";
-#endif
+
         for (int i = 0; i < unit.get_tank_height(); ++i)
         {
             _arena[cur_pos->x][cur_pos->y + i] = 0;
+            _arena[cur_pos->x + 1][cur_pos->y + i] = 0;
         }
         for (int i = 0; i < unit.get_tank_height(); ++i)
         {
             _arena[cur_pos->x + unit.get_tank_width()][cur_pos->y + i] = pic;
+            _arena[cur_pos->x + unit.get_tank_width() + 1][cur_pos->y + i] = pic;
         }
-        unit.set_cur_point(cur_pos->x + 1, cur_pos->y);
+        unit.set_cur_point(cur_pos->x + 2, cur_pos->y);
     }
         else if (input == KEY_LEFT)
     {
@@ -103,12 +103,14 @@ void Field::do_action(Unit &unit)
         for (int i = 0; i < unit.get_tank_height(); ++i)
         {
             _arena[cur_pos->x + unit.get_tank_width() - 1][cur_pos->y + i] = 0;
+            _arena[cur_pos->x + unit.get_tank_width() - 2][cur_pos->y + i] = 0;
         }
         for (int i = 0; i < unit.get_tank_height(); ++i)
         {
             _arena[cur_pos->x - 1][cur_pos->y + i] = pic;
+            _arena[cur_pos->x - 2][cur_pos->y + i] = pic;
         }
-        unit.set_cur_point(cur_pos->x - 1, cur_pos->y);
+        unit.set_cur_point(cur_pos->x - 2, cur_pos->y);
     }
     else if (input == KEY_UP)
     {
@@ -180,4 +182,51 @@ Field::~Field(void)
 		free(_arena[i]);
 	}
     free(_arena);
+}
+
+void Field::move_unit(Unit &unit, int direction)
+{
+    Point const *cur_pos = unit.get_cur_pos(); 
+    int tank_height = unit.get_tank_height();
+    int tank_width = unit.get_tank_width();
+    if (direction == MOVE_RIGHT)
+    {
+        for (int i = 0; i < tank_height; ++i)
+        {
+            _arena[cur_pos->x][cur_pos->y + i] = 0;
+            _arena[cur_pos->x + 1][cur_pos->y + i] = 0;
+            _arena[cur_pos->x + tank_width][cur_pos->y + i] = pic;
+            _arena[cur_pos->x + tank_width + 1][cur_pos->y + i] = pic;
+        }
+        unit.set_cur_point(cur_pos->x + 2, cur_pos->y);
+    }
+    if (direction == MOVE_LEFT)
+    {
+        for (int i = 0; i < tank_height; ++i)
+        {
+            _arena[cur_pos->x + tank_width - 1][cur_pos->y + i] = 0;
+            _arena[cur_pos->x + tank_width - 2][cur_pos->y + i] = 0;
+            _arena[cur_pos->x - 1][cur_pos->y + i] = pic;
+            _arena[cur_pos->x - 2][cur_pos->y + i] = pic;
+        }
+        unit.set_cur_point(cur_pos->x - 2, cur_pos->y);
+    }
+    if (direction == MOVE_UP)
+    {
+        for (int i = 0; i < tank_width; ++i)
+        {
+            _arena[cur_pos->x + i][cur_pos->y] = 0;
+            _arena[cur_pos->x + i][cur_pos->y + tank_height] = pic;
+        }
+        unit.set_cur_point(cur_pos->x, cur_pos->y + 1);
+    }
+    if (direction == MOVE_DOWN)
+    {
+        for (int i = 0; i < tank_width; ++i)
+        {
+            _arena[cur_pos->x + i][cur_pos->y + tank_height - 1] = 0;
+            _arena[cur_pos->x + i][cur_pos->y - 1] = pic;
+        }
+        unit.set_cur_point(cur_pos->x, cur_pos->y - 1);
+    }
 }
