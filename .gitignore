@@ -3,3 +3,4 @@ best_tanks
 .vscode/**
 obj/**
 log.txt
+src/client/a.out

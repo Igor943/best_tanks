@@ -13,13 +13,26 @@ void Engine::engine_init(void)
 void Engine::engine_run(void)
 {
 	int res;
-	Unit u1(STDIN_FILENO, LOC_USER_TANK, 0, 0);
+
+											struct itimerspec new_value3;
+
+											new_value3.it_interval.tv_sec = 0;
+											new_value3.it_interval.tv_nsec = 150000000;
+											new_value3.it_value.tv_sec = 1;
+											new_value3.it_value.tv_nsec = 1;
+
+											int tim3 = timerfd_create(CLOCK_MONOTONIC, 0);
+											timerfd_settime(tim3, 0, &new_value3, NULL);
+
+			fcntl(STDIN_FILENO, F_SETFL, fcntl(STDIN_FILENO, F_GETFL) | O_NONBLOCK);
+
+	Unit u1(tim3, LOC_USER_TANK, 0, 0);
 	Field display;
 
 											struct itimerspec new_value;
 
 											new_value.it_interval.tv_sec = 0;
-											new_value.it_interval.tv_nsec = 2147483647 / 20;
+											new_value.it_interval.tv_nsec = 250000000;
 											new_value.it_value.tv_sec = 1;
 											new_value.it_value.tv_nsec = 1;
 
@@ -31,7 +44,7 @@ void Engine::engine_run(void)
 											struct itimerspec new_value2;
 
 											new_value2.it_interval.tv_sec = 0;
-											new_value2.it_interval.tv_nsec = 2147483647 / 10;
+											new_value2.it_interval.tv_nsec = 250000000;
 											new_value2.it_value.tv_sec = 1;
 											new_value2.it_value.tv_nsec = 1;
 

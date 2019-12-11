@@ -12,7 +12,8 @@
 #include <sys/timerfd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <netinet/in.h> 
+#include <netinet/in.h>
+#include <fcntl.h>
 
 /* C++ includes */
 #include <vector>
@@ -23,10 +24,11 @@
 /* Proj includes */
 #include "Field.hpp"
 #include "Unit.hpp"
+#include "Bullet.hpp"
 
-#define LOC_USER_TANK   1
-#define SOC_USER_TANK   2
-#define AI_TANK         3
+#define LOC_USER_TANK   48
+#define SOC_USER_TANK   49
+#define AI_TANK         50
 
 class Engine
 {
