@@ -33,7 +33,7 @@ void Engine::engine_run(void)
 	}
 
 	/* Main cycle */
-	while(1)
+	while (1)
 	{
 		res = poll(fds, __VOL, -1);
 		if (res == -1)
