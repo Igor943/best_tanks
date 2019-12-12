@@ -1,6 +1,8 @@
 
 #include "Engine.hpp"
 
+const int __VOL = 4;
+
 void Engine::engine_init(void)
 {   
     initscr();
@@ -15,26 +17,25 @@ void Engine::engine_run(void)
 {
 	int res;
 
-	Unit u1(LOC_USER_TANK, 0, 0);
-	Unit u2(AI_TANK, 100, 30);
-	Unit u3(AI_TANK, 25, 30);
-	Unit u4(SOC_USER_TANK, 40, 0);
+	std::vector<Unit *> vec_units;
+	vec_units.push_back(new Unit(LOC_USER_TANK, 0, 0));
+	vec_units.push_back(new Unit(SOC_USER_TANK, 40, 0));
+	vec_units.push_back(new Unit(AI_TANK, 100, 30));
+	vec_units.push_back(new Unit(AI_TANK, 25, 30));
+
 	Field display;
 
-	struct pollfd fds[4];
-	fds[0].fd = u1.get_fd();
-	fds[0].events = POLLIN;
-	fds[1].fd = u2.get_fd();
-	fds[1].events = POLLIN;
-	fds[2].fd = u3.get_fd();
-	fds[2].events = POLLIN;
-	fds[3].fd = u4.get_fd();
-	fds[3].events = POLLIN;
+	struct pollfd fds[__VOL];
+	for (int i = 0; i < __VOL; ++i)
+	{
+		fds[i].fd = vec_units[i]->get_fd();
+		fds[i].events = POLLIN;
+	}
 
 	/* Main cycle */
 	while(1)
 	{
-		res = poll(fds, 4, -1);
+		res = poll(fds, __VOL, -1);
 		if (res == -1)
 		{
 			perror("bad poll");
@@ -42,25 +43,13 @@ void Engine::engine_run(void)
 		}
 		else
 		{
-			if (fds[0].revents & POLLIN)
+			for (int i = 0; i < __VOL; ++i)
 			{
-				fds[0].revents = 0;
-				display.do_action(u1);
-			}
-			if (fds[1].revents & POLLIN)
-			{
-				fds[1].revents = 0;
-				display.do_action(u2);
-			}
-			if (fds[2].revents & POLLIN)
-			{
-				fds[2].revents = 0;
-				display.do_action(u3);
-			}
-			if (fds[3].revents & POLLIN)
-			{
-				fds[3].revents = 0;
-				display.do_action(u4);
+				if (fds[i].revents & POLLIN)
+				{
+					fds[i].revents = 0;
+					display.do_action(vec_units[i]);
+				}
 			}
 		}
 		display.do_refresh();

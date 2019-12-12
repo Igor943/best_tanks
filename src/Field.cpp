@@ -18,16 +18,16 @@ Field::Field(void)
 #endif
 }
 
-void Field::do_action(Unit &unit)
+void Field::do_action(Unit *unit)
 {
 #ifdef DEBUG_ON
     _t_log << "--- Field::do_action() call\n";
 #endif
     uint64_t input_64;
     int input;
-    if (unit.get_type() == LOC_USER_TANK)
+    if (unit->get_type() == LOC_USER_TANK)
     {
-        read(unit.get_fd(), &input_64, 8);
+        read(unit->get_fd(), &input_64, 8);
         input = getch();
         if (input == -1) {
             return;
@@ -45,26 +45,25 @@ void Field::do_action(Unit &unit)
             }
         }
     }
-    else if (unit.get_type() == AI_TANK)
+    else if (unit->get_type() == AI_TANK)
     {
-        read(unit.get_fd(), &input_64, 8);
+        read(unit->get_fd(), &input_64, 8);
         input = get_rand_move(); 
     }
-    else if (unit.get_type() == SOC_USER_TANK)
+    else if (unit->get_type() == SOC_USER_TANK)
     {
-                                int buf = 0;
-                                int sock;
-                                sock = accept(unit.get_fd(), NULL, NULL);
-                                recv(sock, &buf, 4, 0);
+        int buf = 0;
+        int sock;
+        sock = accept(unit->get_fd(), NULL, NULL);
+        recv(sock, &buf, 4, 0);
 #ifdef DEBUG_ON
-                                _t_log << "--- Socket get " << buf << '\n';
+        _t_log << "--- Socket get " << buf << '\n';
 #endif
-                                close(sock);
-                                input = buf;
-                                // exit(0);
+        close(sock);
+        input = buf;
     }
 #ifdef DEBUG_ON
-    _t_log << "--- Unit's fd is " << unit.get_fd() << '\n';
+    _t_log << "--- Unit's fd is " << unit->get_fd() << '\n';
     _t_log << "--- Unit input is " << input << '\n';
 #endif
     if (input == 'q')
@@ -125,12 +124,12 @@ Field::~Field(void)
     free(_arena);
 }
 
-void Field::move_unit(Unit &unit, int direction)
+void Field::move_unit(Unit *unit, int direction)
 {
-    Point const *cur_pos = unit.get_cur_pos(); 
-    int tank_height = unit.get_tank_height();
-    int tank_width = unit.get_tank_width();
-    char pic = unit.get_type();
+    Point const *cur_pos = unit->get_cur_pos(); 
+    int tank_height = unit->get_tank_height();
+    int tank_width = unit->get_tank_width();
+    char pic = unit->get_type();
     if (direction == KEY_RIGHT)
     {
         for (int i = 0; i < tank_height; ++i)
@@ -140,7 +139,7 @@ void Field::move_unit(Unit &unit, int direction)
             _arena[cur_pos->x + tank_width][cur_pos->y + i] = pic;
             _arena[cur_pos->x + tank_width + 1][cur_pos->y + i] = pic;
         }
-        unit.set_cur_point(cur_pos->x + 2, cur_pos->y);
+        unit->set_cur_point(cur_pos->x + 2, cur_pos->y);
     }
     if (direction == KEY_LEFT)
     {
@@ -151,7 +150,7 @@ void Field::move_unit(Unit &unit, int direction)
             _arena[cur_pos->x - 1][cur_pos->y + i] = pic;
             _arena[cur_pos->x - 2][cur_pos->y + i] = pic;
         }
-        unit.set_cur_point(cur_pos->x - 2, cur_pos->y);
+        unit->set_cur_point(cur_pos->x - 2, cur_pos->y);
     }
     if (direction == KEY_DOWN)
     {
@@ -160,7 +159,7 @@ void Field::move_unit(Unit &unit, int direction)
             _arena[cur_pos->x + i][cur_pos->y] = 0;
             _arena[cur_pos->x + i][cur_pos->y + tank_height] = pic;
         }
-        unit.set_cur_point(cur_pos->x, cur_pos->y + 1);
+        unit->set_cur_point(cur_pos->x, cur_pos->y + 1);
     }
     if (direction == KEY_UP)
     {
@@ -169,6 +168,6 @@ void Field::move_unit(Unit &unit, int direction)
             _arena[cur_pos->x + i][cur_pos->y + tank_height - 1] = 0;
             _arena[cur_pos->x + i][cur_pos->y - 1] = pic;
         }
-        unit.set_cur_point(cur_pos->x, cur_pos->y - 1);
+        unit->set_cur_point(cur_pos->x, cur_pos->y - 1);
     }
 }

@@ -17,7 +17,6 @@ public:
     Point const *get_cur_pos(void);
     void set_cur_point(int x, int y);
     ~Unit(void);
-
 private:
     int _fd;
     int _type;
