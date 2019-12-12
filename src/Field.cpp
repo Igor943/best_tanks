@@ -12,10 +12,6 @@ Field::Field(void)
 	}
     _arena_width = x;
     _arena_height = y;
-
-    Bullet *tmp = new Bullet(1, 1, KEY_RIGHT);
-    _vec_bullets.push_back(tmp);
-
 #ifdef DEBUG_ON
     _t_log << "--- width screen: " << _arena_width << '\n';
     _t_log << "--- height screen: " << _arena_height << '\n';
@@ -56,36 +52,16 @@ void Field::do_action(Unit &unit)
     }
     else if (unit.get_type() == SOC_USER_TANK)
     {
-                                /* Creating some variables */
-                                int buf = 0;               // Buffer for send and receive
-                                int sock;                       // Сurrent connection socket
-                                // char *cry_mess;                 // Pointer for encrypt and decrypt
-                                /* Clear the buffer and waiting for connection */
-                                // memset(buf, 0, STDBUF);
+                                int buf = 0;
+                                int sock;
                                 sock = accept(unit.get_fd(), NULL, NULL);
-                                /* Create log entries */
-                                // put_log("incoming connection");
-                                /* Receive a message and decrypt once */
                                 recv(sock, &buf, 4, 0);
 #ifdef DEBUG_ON
                                 _t_log << "--- Socket get " << buf << '\n';
 #endif
-                                // cry_mess = ft_decry(buf, get_key());
-                                /* ROSAPS try detect */
-                                // if (strcmp(cry_mess, "YAFILTR") == 0) {
-                                    // work_filter(sock);
-                                /* Other case */
-                                // } else {
-                                //     char asw[] = "ROSA(c) 2019 DAEMON\n";
-                                //     send(sock, asw, strlen(asw), 0);
-                                // }
-                                // /* Вischarge of resources */
-                                // free(cry_mess);
                                 close(sock);
                                 input = buf;
-                                exit(0);
-                                /* Create log entries */
-                                // put_log("connection closed");
+                                // exit(0);
     }
 #ifdef DEBUG_ON
     _t_log << "--- Unit's fd is " << unit.get_fd() << '\n';
@@ -99,14 +75,14 @@ void Field::do_action(Unit &unit)
     else {
         move_unit(unit, input);
     }
-    for (Bullet *cur : _vec_bullets) {
-        Point const *pos = cur->get_cur_pos();
-        if (cur->get_direction() == KEY_RIGHT) {
-            _arena[pos->x][pos->y] = 0;
-            _arena[pos->x + 2][pos->y] = '+';
-            cur->set_cur_pos(pos->x + 2, pos->y);
-        }
-    }
+    // for (Bullet *cur : _vec_bullets) {
+    //     Point const *pos = cur->get_cur_pos();
+    //     if (cur->get_direction() == KEY_RIGHT) {
+    //         _arena[pos->x][pos->y] = 0;
+    //         _arena[pos->x + 2][pos->y] = '+';
+    //         cur->set_cur_pos(pos->x + 2, pos->y);
+    //     }
+    // }
 }
 
 void Field::do_refresh(void)

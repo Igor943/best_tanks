@@ -9,7 +9,7 @@ struct Point;
 class Unit
 {
 public:
-    Unit(int fd, int type, int x_pos, int y_pos);
+    Unit(int type, int x_pos, int y_pos);
     int get_fd(void);
     int get_type(void);
     int get_tank_width(void);

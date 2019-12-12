@@ -10,7 +10,6 @@
 #include "Engine.hpp"
 
 class Unit;
-class Bullet;
 
 class Field
 {
@@ -25,7 +24,6 @@ private:
     char** _arena;
     int _arena_width;
     int _arena_height;
-    std::vector<Bullet *> _vec_bullets;
 };
 
 #endif /* _FIELD_HPP_ */
