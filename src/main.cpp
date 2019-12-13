@@ -11,9 +11,8 @@ int main(void)
 	_t_log.open("./log.txt", std::ios::app);
 	_t_log << "---=== START ===---\n";
 #endif
-	Engine::engine_init();
-	Engine::engine_run();
-	//Engine::engine_stop();
+	Engine eng;
+	eng.run();
 	return (0);
 }
 

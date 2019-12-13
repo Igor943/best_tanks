@@ -33,10 +33,17 @@
 class Engine
 {
 public:
-    static void engine_init(void);
-    static void engine_run(void);
+    Engine(void);
+    ~Engine(void);
+    int run(void);
+    void do_action(Unit *unit);
+    void move_unit(Unit *unit, int direction);
+    int get_rand_move(void);
+    void do_refresh(void);
 private:
-    void do_action();
+    int _arena_width;
+    int _arena_height;
+    char **_arena;
 };
 
 struct Point
